@@ -1,0 +1,34 @@
+{
+  "name": "backend",
+  "version": "1.0.0",
+  "description": "todo app",
+  "main": "index.js",
+  "author": "Benedicte Musabimana",
+  "scripts": {
+    "start": "nodemon start.js",
+    "dev": "nodemon -L start.js",
+    "db:create": "npx sequelize db:create",
+    "db:migrate": "npx sequelize db:migrate && npx sequelize db:seed:all",
+    "db:migrate:undo": "npx sequelize db:migrate:undo:all",
+    "db:seed": "npx sequelize db:seed:all",
+    "db:seed:undo": "npx sequelize db:seed:undo:all"
+  },
+  "dependencies": {
+    "@babel/runtime": "^7.16.3",
+    "cors": "^2.8.5",
+    "dotenv": "^10.0.0",
+    "express": "^4.17.1",
+    "mysql2": "^2.3.3",
+    "path": "^0.12.7",
+    "sequelize": "^6.12.0-alpha.1"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.16.0",
+    "@babel/plugin-transform-runtime": "^7.16.4",
+    "@babel/preset-env": "^7.16.4",
+    "@babel/register": "^7.16.0",
+    "babel-plugin-transform-runtime": "^6.23.0",
+    "nodemon": "^2.0.15",
+    "sequelize-cli": "^6.3.0"
+  }
+}

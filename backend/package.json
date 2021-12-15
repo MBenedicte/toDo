@@ -5,8 +5,7 @@
   "main": "index.js",
   "author": "Benedicte Musabimana",
   "scripts": {
-    "start": "nodemon start.js",
-    "dev": "nodemon -L start.js",
+    "dev": "nodemon index.js",
     "db:create": "npx sequelize db:create",
     "db:migrate": "npx sequelize db:migrate && npx sequelize db:seed:all",
     "db:migrate:undo": "npx sequelize db:migrate:undo:all",

@@ -1,4 +1,3 @@
-import { condition } from "sequelize";
 import db from "./database/models";
 import * as statusCode from "./statusCodes";
 
@@ -23,8 +22,12 @@ export const checkActivity = async (req, res, next) => {
     params: { id },
     body: { title },
   } = req;
-  const condition = title ? title : id;
-  const activity = await db.Activity.findOne({ where: { condition } });
+  const condition = title ? { title } : { id };
+
+  const activity = await db.Activity.findOne({
+    where: condition,
+    logging: false,
+  });
 
   const activityExist = activity !== null ? true : false;
 
@@ -42,8 +45,8 @@ export const createActivity = async (req, res) => {
   const {
     body: { title },
   } = req;
+  const activity = await db.Activity.create({ title, logging: false });
 
-  const activity = await db.Activity.create({ title });
   res.send({
     response: {
       status: statusCode.CREATED,
@@ -59,8 +62,15 @@ export const editActivity = async (req, res) => {
     body: { title },
   } = req;
 
-  const checkActivityId = await db.Activity.findOne({ where: { id } });
-  const checkActivitytTitle = await db.Activity.findOne({ where: { title } });
+  const checkActivityId = await db.Activity.findOne({
+    where: { id },
+    logging: false,
+  });
+
+  const checkActivitytTitle = await db.Activity.findOne({
+    where: { title },
+    logging: false,
+  });
 
   if (checkActivityId === null || checkActivityId === undefined) {
     res.send({
@@ -70,14 +80,14 @@ export const editActivity = async (req, res) => {
       },
     });
   }
-  const condition =
-    (checkActivitytTitle != null || checkActivitytTitle != undefined) &&
-    checkActivityId.id === checkActivitytTitle.id;
-  if (condition) {
+  if (
+    checkActivitytTitle == null ||
+    checkActivitytTitle.id === checkActivityId.id
+  ) {
     const activity = await db.Activity.update(
       { title },
       { where: { id }, returning: true }
-    ).then(() => db.Activity.findOne({ where: { id } }));
+    ).then(() => db.Activity.findOne({ where: { id }, logging: false }));
 
     res.send({
       response: {
@@ -86,11 +96,18 @@ export const editActivity = async (req, res) => {
         data: activity,
       },
     });
-  } else {
+  } else if (checkActivitytTitle != null) {
     res.status(statusCode.CONFLICT).send({
       error: {
         status: statusCode.CONFLICT,
         message: `This activity title already exist`,
+      },
+    });
+  } else {
+    res.status(statusCode.SERVER_ERROR).send({
+      error: {
+        status: statusCode.SERVER_ERROR,
+        message: `Something is wrong`,
       },
     });
   }
@@ -101,12 +118,12 @@ export const findOneActivity = async (req, res) => {
     params: { id },
   } = req;
 
-  const activity = await db.Activity.findOne({ where: { id } });
+  const activity = await db.Activity.findOne({ where: { id }, logging: false });
   activity != null || activity != undefined
     ? res.send({
         response: {
           status: statusCode.OK,
-          message: `${activity.name} found successfully`,
+          message: `Activity found successfully`,
           data: activity,
         },
       })
@@ -119,7 +136,7 @@ export const findOneActivity = async (req, res) => {
 };
 
 export const findAllActivities = async (req, res) => {
-  const activities = await db.Activity.findAll({});
+  const activities = await db.Activity.findAll({ logging: false });
   activities.length === 0 || activities === null
     ? res.send({
         error: {
@@ -135,3 +152,4 @@ export const findAllActivities = async (req, res) => {
         },
       });
 };
+

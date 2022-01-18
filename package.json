@@ -1,0 +1,10 @@
+{
+  "name": "docker-complete",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "up": "docker-compose up -d --build && docker volume prune",
+    "stop": "docker-compose stop",
+    "down": "docker-compose down"
+  }
+}

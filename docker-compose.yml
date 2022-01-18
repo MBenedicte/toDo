@@ -1,0 +1,50 @@
+version: "3.8"
+services:
+  frontend:
+    build: ./frontend
+    image: frontend-image
+    environment:
+      CHOKIDAR_USEPOLLING: "true" #hot reload enabled
+    volumes:
+      - ./frontend:/frontend
+      - /frontend/node_modules
+    ports:
+      - 8000:8000
+    container_name: frontend
+    depends_on:
+      - backend
+  backend:
+    build: ./backend
+    image: backend-image
+    container_name: backend
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./backend:/backend #bindmount volume
+      - /backend/node_modules #anonymous volume
+    depends_on:
+      - mysql
+    env_file:
+      - ./backend/.env
+
+  mysql:
+    image: mysql
+    container_name: mysql #this is also the db name, use it in the adminer login window
+    command: --default-authentication-plugin=mysql_native_password
+    restart: always
+    volumes:
+      - "sql-db:/var/lib/mysql:rw" #synchs the named volume with the data in the docker container for mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: password #to log in to the sql container, use root as user and password as the password
+
+  adminer:
+    image: adminer
+    container_name: adminer
+    restart: always
+    ports:
+      - 8080:8080
+volumes:
+  sql-db:
+    name: sql-db #specifies the named volume that contains the database, you can see this volume by typing "docker volume ls" into the console.
+#DO NOT USE "docker-compose down -v". It will remove the volume that contains all the database data.
+#Use docker-compose down instead or npm run down.

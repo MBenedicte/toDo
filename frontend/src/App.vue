@@ -1,65 +1,31 @@
 <template>
-  <div>
-    <ActivityComponent :activities="activities" />
+  <div id="app">
+    <nav class="navbar navbar-expand navbar-dark bg-dark">
+      <router-link to="/" class="navbar-brand">To Do</router-link>
+      <div class="navbar-nav mr-auto">
+        <li class="nav-item">
+          <router-link to="/activities" class="nav-link"
+            >All activities</router-link
+          >
+        </li>
+        <li class="nav-item">
+          <router-link to="/addActivity" class="nav-link"
+            >Add new Activity</router-link
+          >
+        </li>
+      </div>
+    </nav>
+
+    <div class="container mt-3">
+      <router-view />
+    </div>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from "vue";
-import Activity from "./types/activity";
-import ActivityComponent from "./components/Activities.vue";
+import { defineComponent } from "vue";
 
 export default defineComponent({
   name: "App",
-  components: {
-    ActivityComponent,
-  },
-  setup() {
-    const activities = ref<Activity[]>([
-      {
-        id: 1,
-        title: "title1",
-        createdAt: "2020-01-01",
-        updatedAt: "2020-01-01",
-      },
-      {
-        id: 2,
-        title: "title2",
-        createdAt: "2020-01-01",
-        updatedAt: "2020-01-01",
-      },
-      {
-        id: 3,
-        title: "title3",
-        createdAt: "2020-01-01",
-        updatedAt: "2020-01-01",
-      },
-      {
-        id: 4,
-        title: "title4",
-        createdAt: "2020-01-01",
-        updatedAt: "2020-01-01",
-      },
-    ]);
-    return { activities };
-  },
-  data() {
-    return {
-      name: "Link",
-      age: 25 as number | string,
-    };
-  },
-  methods: {
-    changeName(name: string) {
-      this.name = name;
-      return name;
-    },
-    changeAge(age: string | number) {
-      this.age = age;
-      return age;
-    },
-  },
 });
 </script>
-
-<style></style>
